@@ -174,7 +174,7 @@ function App() {
           <Route path="/employees/:id" element={<EmployeeDetail />} />
           <Route path="/bookings" element={<BookingList />} />
           
-          {/* Redirect any unknown routes to the dashboard */}
+          {/* 나머지 경로 여기에 추가해주세요..~ */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

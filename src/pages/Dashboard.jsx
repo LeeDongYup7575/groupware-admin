@@ -64,7 +64,7 @@ const Dashboard = () => {
     <div className="flex-1 ml-64 bg-gray-50 p-8">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">대시보드</h1>
       
-      {/* Cards */}
+      {/* 상단에 출력되는 카드 형식의 총계인데,,,, 필요에 따라서 navigate경로와 데이터 바꿔서 출력하면 될 것 같습니다! */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <DashboardCard 
           title="전체 임직원" 
@@ -91,7 +91,7 @@ const Dashboard = () => {
         />
       </div>
 
-      {/* Recent Employees Section */}
+      {/* 최근 로그인한 임직원 + 근태 순위로 보여줄 수 있도록 추가 부탁드려요!! */}
       <div className="glass-card p-6 mb-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">최근 로그인한 임직원</h2>
         
@@ -145,9 +145,6 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className="text-center text-gray-500 text-sm">
-        <p>Hello World from TechX Admin Portal!</p>
-      </div>
     </div>
   );
 };

@@ -103,7 +103,6 @@ export const formatDate = (dateString) => {
     if (digitsOnly.length === 7) {
       return digitsOnly.replace(/(\d{4})(\d{3})/, '$1-$2');
     } else {
-      // Return as is if it doesn't match the format
       return empNum;
     }
   };

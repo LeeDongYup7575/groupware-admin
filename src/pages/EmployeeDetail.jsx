@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiEdit, FiTrash2, FiSave, FiX } from 'react-icons/fi';
+import { FiArrowLeft, FiEdit, FiTrash2, FiSave, FiX, FiCheck } from 'react-icons/fi';
 import useEmployeeStore from '../store/employeeStore';
 import { formatDate, formatPhoneNumber } from '../utils/formatters';
 import '../styles/glassmorphism.css';
@@ -16,6 +16,7 @@ const EmployeeDetail = () => {
     fetchEmployeeDetails, 
     updateEmployee, 
     deactivateEmployee,
+    activateEmployee, // 새로 추가된 함수
     clearCurrentEmployee,
     departments,
     positions,
@@ -81,14 +82,29 @@ const EmployeeDetail = () => {
   
   const handleDeactivate = async () => {
     // Show confirm dialog
-    if (!window.confirm('정말로 이 직원을 비활성화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+    if (!window.confirm('정말로 이 직원을 비활성화하시겠습니까? 이 작업은 나중에 되돌릴 수 있습니다.')) {
       return;
     }
     
     const result = await deactivateEmployee(id);
     
     if (result.success) {
-      navigate('/employees');
+      // 비활성화 후 직원 정보 새로고침
+      fetchEmployeeDetails(id);
+    }
+  };
+  
+  const handleActivate = async () => {
+    // Show confirm dialog
+    if (!window.confirm('이 직원 계정을 다시 활성화하시겠습니까?')) {
+      return;
+    }
+    
+    const result = await activateEmployee(id);
+    
+    if (result.success) {
+      // 활성화 후 직원 정보 새로고침
+      fetchEmployeeDetails(id);
     }
   };
   
@@ -180,13 +196,21 @@ const EmployeeDetail = () => {
               >
                 <FiEdit className="mr-1" /> 수정
               </button>
-              <button
-                className="glass-btn px-4 py-2 bg-red-500 text-white rounded-lg flex items-center"
-                onClick={handleDeactivate}
-                disabled={!currentEmployee.enabled}
-              >
-                <FiTrash2 className="mr-1" /> 비활성화
-              </button>
+              {currentEmployee.enabled ? (
+                <button
+                  className="glass-btn px-4 py-2 bg-red-500 text-white rounded-lg flex items-center"
+                  onClick={handleDeactivate}
+                >
+                  <FiTrash2 className="mr-1" /> 비활성화
+                </button>
+              ) : (
+                <button
+                  className="glass-btn px-4 py-2 bg-green-500 text-white rounded-lg flex items-center"
+                  onClick={handleActivate}
+                >
+                  <FiCheck className="mr-1" /> 활성화
+                </button>
+              )}
             </>
           )}
         </div>

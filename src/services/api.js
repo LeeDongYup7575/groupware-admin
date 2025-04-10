@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-// Create axios instance with default config
 const api = axios.create({
-  baseURL: 'http://localhost:8082', // 스프링 부트 서버 주소
+  baseURL: 'http://localhost:8082', // 스프링 부트 서버 주소 -> 각자 자기 포트에 맞게 수정해주세여. 아마 다들 80일듯
   headers: {
     'Content-Type': 'application/json',
   },
@@ -23,15 +22,16 @@ api.interceptors.request.use(
   }
 );
 
-// API methods
+// API methods 
+// 각자 자신이 구축한 서버 api에 get,post,delete ...등의 요청을 보내주시면 됩니다.
 const apiService = {
-  // Dashboard
+  
   getDashboardData: async () => {
     const response = await api.get('/api/admin/dashboard');
     return response.data;
   },
   
-  // Employees
+  // Employee
   getEmployeeList: async (page = 1, size = 10, searchTerm = '', deptId = null, posId = null) => {
     const params = { page, size };
     
@@ -57,8 +57,13 @@ const apiService = {
     const response = await api.delete(`/api/admin/employees/details/${id}`);
     return response.data;
   },
+
+  activateEmployee: async (id, currentEmployee) => {
+    const response = await api.put(`/api/admin/employees/activate/${id}`);
+    return response.data;
+  },
   
-  // Departments and Positions (for dropdowns)
+  // Departments and Positions - 임직원 필터링용
   getDepartments: async () => {
     const response = await api.get('/api/admin/employees/departments');
     return response.data;
@@ -83,7 +88,7 @@ const apiService = {
   deleteSuppliesBooking: async (id) => {
     const response = await api.delete(`/api/admin/booking/supplies/${id}`);
     return response.data;
-  },
+  }
 };
 
 export default apiService;

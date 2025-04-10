@@ -7,7 +7,6 @@ const useBookingStore = create((set, get) => ({
   isLoading: false,
   error: null,
   
-  // Fetch all bookings
   fetchAllBookings: async () => {
     set({ isLoading: true, error: null });
     
@@ -28,14 +27,12 @@ const useBookingStore = create((set, get) => ({
     }
   },
   
-  // Delete a meeting room booking
   deleteMeetingRoomBooking: async (id) => {
     set({ isLoading: true, error: null });
     
     try {
       await apiService.deleteMeetingRoomBooking(id);
       
-      // Remove the deleted booking from the list
       const meetingRoomBookings = get().meetingRoomBookings.filter(booking => booking.id !== id);
       
       set({ 
@@ -54,14 +51,12 @@ const useBookingStore = create((set, get) => ({
     }
   },
   
-  // Delete a supplies booking
   deleteSuppliesBooking: async (id) => {
     set({ isLoading: true, error: null });
     
     try {
       await apiService.deleteSuppliesBooking(id);
       
-      // Remove the deleted booking from the list
       const suppliesBookings = get().suppliesBookings.filter(booking => booking.id !== id);
       
       set({ 

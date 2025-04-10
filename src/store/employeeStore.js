@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import axios from 'axios';
+
 import apiService from '../services/api';
 
 const useEmployeeStore = create((set, get) => ({
@@ -11,7 +13,6 @@ const useEmployeeStore = create((set, get) => ({
   isLoading: false,
   error: null,
   
-  // Fetch employees list with pagination
   fetchEmployees: async (page = 1, size = 10, searchTerm = '', deptId = null, posId = null) => {
     set({ isLoading: true, error: null });
     
@@ -49,14 +50,13 @@ const useEmployeeStore = create((set, get) => ({
     }
   },
   
-  // Update employee
+
   updateEmployee: async (id, employeeData) => {
     set({ isLoading: true, error: null });
     
     try {
       const updatedEmployee = await apiService.updateEmployee(id, employeeData);
       
-      // Update the employees list if the updated employee is in the list
       const employees = get().employees.map(emp => 
         emp.id === updatedEmployee.id ? updatedEmployee : emp
       );
@@ -85,7 +85,6 @@ const useEmployeeStore = create((set, get) => ({
     try {
       await apiService.deactivateEmployee(id);
       
-      // Remove the deactivated employee from the list
       const employees = get().employees.filter(emp => emp.id !== id);
       
       set({ 
@@ -104,8 +103,31 @@ const useEmployeeStore = create((set, get) => ({
       return { success: false, error: error.response?.data?.message || error.message };
     }
   },
+
+  activateEmployee: async (id) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      await apiService.activateEmployee(id);
+      
+      const currentEmployee = { ...get().currentEmployee, enabled: true };
+      
+      set({ 
+        currentEmployee,
+        isLoading: false 
+      });
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Error activating employee:', error);
+      set({ 
+        isLoading: false, 
+        error: error.response?.data?.message || error.message || '직원 활성화 중 오류가 발생했습니다.' 
+      });
+      return { success: false, error: error.response?.data?.message || error.message };
+    }
+  },
   
-  // Fetch departments (for filtering)
   fetchDepartments: async () => {
     try {
       const departments = await apiService.getDepartments();
@@ -115,7 +137,6 @@ const useEmployeeStore = create((set, get) => ({
     }
   },
   
-  // Fetch positions (for filtering)
   fetchPositions: async () => {
     try {
       const positions = await apiService.getPositions();
@@ -125,7 +146,6 @@ const useEmployeeStore = create((set, get) => ({
     }
   },
   
-  // Clear current employee (when leaving detail page)
   clearCurrentEmployee: () => {
     set({ currentEmployee: null });
   },

@@ -4,7 +4,6 @@ import { formatDateTime, formatTime, formatDuration } from '../utils/formatters'
 import '../styles/glassmorphism.css';
 
 const BookingTable = ({ bookings, bookingType, onDelete }) => {
-  // Early return if no bookings
   if (!bookings || bookings.length === 0) {
     return (
       <div className="glass-card p-8 text-center">
