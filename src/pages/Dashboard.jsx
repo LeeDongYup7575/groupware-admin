@@ -30,8 +30,8 @@ const Dashboard = () => {
         const fetchDashboardData = async () => {
             try {
                 setIsLoading(true);
-                // const data = await apiService.getDashboardData();
-                // setDashboardData(data);
+                const data = await apiService.getDashboardData();
+                setDashboardData(data);
 
                 const [departmentResp, attendanceResp, employeeStatusResp, todayAbsenceResp] = await Promise.all([apiService.getDepartmentDistribution(), apiService.getAttendanceRanking(), apiService.getEmployeeStatus(), apiService.getTodayAbsences()]);
 
