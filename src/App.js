@@ -156,6 +156,8 @@ import EmployeeList from './pages/EmployeeList';
 import EmployeeDetail from './pages/EmployeeDetail';
 import BookingList from './pages/BookingList';
 import Sidebar from './components/Sidebar';
+import BoardList from './pages/BoardList';
+import DepartmentPositionManageMent from './pages/DepartmentPositionManage';
 import './App.css';
 import './styles/glassmorphism.css';
 
@@ -173,7 +175,8 @@ function App() {
           <Route path="/employees" element={<EmployeeList />} />
           <Route path="/employees/:id" element={<EmployeeDetail />} />
           <Route path="/bookings" element={<BookingList />} />
-          
+          <Route path="/boards" element={<BoardList/>}/>
+          <Route path="/departmentpositionmanagement" element={<DepartmentPositionManageMent/>}/>
           {/* 나머지 경로 여기에 추가해주세요..~ */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

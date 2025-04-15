@@ -89,7 +89,7 @@ const Sidebar = () => {
           </Link>
           
           <Link
-            to="/departments"
+            to="/boards"
             className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive('/departments')}`}
           >
             <FiBriefcase className="text-lg text-white" />
@@ -97,11 +97,11 @@ const Sidebar = () => {
           </Link>
           
           <Link
-            to="/settings"
+            to="/departmentpositionmanagement"
             className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive('/settings')}`}
           >
             <FiSettings className="text-lg text-white" />
-            <span className="text-gray-200">어쩌구 관리</span>
+            <span className="text-gray-200">부서 / 직급 관리</span>
           </Link>
         </nav>
       </div>

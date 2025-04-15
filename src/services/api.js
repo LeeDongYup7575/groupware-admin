@@ -108,7 +108,44 @@ const apiService = {
     deleteSuppliesBooking: async (id) => {
         const response = await api.delete(`/api/admin/booking/supplies/${id}`);
         return response.data;
+    },
+
+    // BoardList
+    getBoardList: async () => {
+        const response = await api.get(`/api/admin/boards/list`);
+        return response.data;
+    },
+
+    updateBoardStatus: async (id, currentStatus) => {
+        const response = await api.put(`/api/admin/boards/updateStatus/${id}`, {isActive: !currentStatus});
+        return response.data;
+    },
+
+    // DepartmentPositionManage
+    getManageDepartment: async () => {
+        const response = await api.get('/api/admin/manage/department');
+        return response.data;
+    },
+
+    getManagePosition: async () => {
+        const response = await api.get('/api/admin/manage/position');
+        return response.data;
+    },
+
+    addDepartment: async (name) => {
+        const response = await api.put(`api/admin/manage/addDepartment/${name}`);
+        return response.data;
+    },
+    deleteDepartment: async (ids) => {
+        const response = await api.delete(`/api/admin/manage/deleteDepartment`,{params:{ids}});
+        return response.data;
     }
+
+
+    // addPosition : async(title) => {
+    //     const response = await api.put(`api/admin/manage/addposition/${title}`);
+    //     return response.data;
+    // }
 };
 
 export default apiService;
