@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiSave, FiXCircle } from 'react-icons/fi';
+import { FiSave, FiXCircle, FiAlertCircle } from 'react-icons/fi';
 import axios from 'axios';
 
 const EmployeeAdd = ({ onClose, onEmployeeAdded }) => {
@@ -7,6 +7,11 @@ const EmployeeAdd = ({ onClose, onEmployeeAdded }) => {
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({
+    email: '',
+    phone: '',
+    ssn: ''
+  });
   
   const [formData, setFormData] = useState({
     empNum: '',
@@ -42,12 +47,102 @@ const EmployeeAdd = ({ onClose, onEmployeeAdded }) => {
     fetchDepartmentsAndPositions();
   }, []);
 
+  // 주민등록번호 유효성 검사 함수
+  const validateSSN = (ssn) => {
+    // 기본 형식 검사: 000000-0000000 형식 또는 숫자 13자리
+    const ssnPattern = /^(\d{6})-?(\d{7})$/;
+    if (!ssnPattern.test(ssn)) {
+      return false;
+    }
+
+    // 하이픈 제거
+    const cleanSSN = ssn.replace('-', '');
+    
+    // 월과 일 검사
+    // const year = parseInt(cleanSSN.substring(0, 2));
+    const month = parseInt(cleanSSN.substring(2, 4));
+    const day = parseInt(cleanSSN.substring(4, 6));
+    
+    if (month < 1 || month > 12) {
+      return false;
+    }
+    
+    // 각 월의 마지막 날짜 배열 (윤년 미고려)
+    const lastDayOfMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    if (day < 1 || day > lastDayOfMonth[month - 1]) {
+      return false;
+    }
+    
+    // 성별 부분 검사
+    const genderCode = parseInt(cleanSSN.substring(6, 7));
+    if (genderCode < 1 || genderCode > 4) {
+      return false;
+    }
+
+    // 주민등록번호 검증 알고리즘 (가중치 기반)
+    const weights = [2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5];
+    let sum = 0;
+    
+    for (let i = 0; i < 12; i++) {
+      sum += parseInt(cleanSSN.charAt(i)) * weights[i];
+    }
+    
+    const checkDigit = (11 - (sum % 11)) % 10;
+    return parseInt(cleanSSN.charAt(12)) === checkDigit;
+  };
+
+  // 이메일 유효성 검사 함수
+  const validateEmail = (email) => {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  // 전화번호 유효성 검사 함수
+  const validatePhone = (phone) => {
+    // 비어있으면 유효함 (필수 필드 아님)
+    if (!phone) return true;
+    // 윤진언니가 주신 정규식. 010-XXXX-XXXX 형식 
+    const re = /^010-\d{4}-\d{4}$/;
+    return re.test(phone);
+  };
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+    
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: newValue
     });
+
+    // 유효성 검사
+    if (name === 'email') {
+      if (!value) {
+        setValidationErrors(prev => ({ ...prev, email: '이메일은 필수 입력 항목입니다.' }));
+      } else if (!validateEmail(value)) {
+        setValidationErrors(prev => ({ ...prev, email: '유효한 이메일 주소를 입력해주세요.' }));
+      } else {
+        setValidationErrors(prev => ({ ...prev, email: '' }));
+      }
+    }
+
+    if (name === 'phone') {
+      if (value && !validatePhone(value)) {
+        setValidationErrors(prev => ({ ...prev, phone: '유효한 전화번호 형식이 아닙니다. (예: 010-1234-5678)' }));
+      } else {
+        setValidationErrors(prev => ({ ...prev, phone: '' }));
+      }
+    }
+
+    if (name === 'ssn') {
+      if (!value) {
+        setValidationErrors(prev => ({ ...prev, ssn: '주민등록번호는 필수 입력 항목입니다.' }));
+      } else if (!validateSSN(value)) {
+        setValidationErrors(prev => ({ ...prev, ssn: '유효한 주민등록번호 형식이 아닙니다. (예: 000000-0000000)' }));
+      } else {
+        setValidationErrors(prev => ({ ...prev, ssn: '' }));
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -62,12 +157,31 @@ const EmployeeAdd = ({ onClose, onEmployeeAdded }) => {
         throw new Error('필수 항목을 모두 입력해주세요.');
       }
 
-      // API call to add employee
+      // 이메일 유효성 검사
+      if (!validateEmail(formData.email)) {
+        setLoading(false);
+        setError('유효한 이메일 주소를 입력해주세요.');
+        return;
+      }
+
+      // 전화번호 유효성 검사 (값이 있는 경우에만)
+      if (formData.phone && !validatePhone(formData.phone)) {
+        setLoading(false);
+        setError('유효한 전화번호 형식이 아닙니다. (예: 010-1234-5678)');
+        return;
+      }
+      
+      // 주민등록번호 유효성 검사
+      if (!validateSSN(formData.ssn)) {
+        setLoading(false);
+        setError('유효한 주민등록번호 형식이 아닙니다. (예: 000000-0000000)');
+        return;
+      }
+
       const response = await axios.post('/api/admin/employees/add', formData);
       
       setLoading(false);
       if (response.data.success) {
-        // Notify parent component that employee was added
         onEmployeeAdded(response.data.employee);
         onClose();
       } else {
@@ -146,8 +260,8 @@ const EmployeeAdd = ({ onClose, onEmployeeAdded }) => {
                 required
               >
                 <option value="">선택</option>
-                <option value="남">남</option>
-                <option value="여">여</option>
+                <option value="M">남</option>
+                <option value="F">여</option>
               </select>
             </div>
 
@@ -161,10 +275,18 @@ const EmployeeAdd = ({ onClose, onEmployeeAdded }) => {
                 name="ssn"
                 value={formData.ssn}
                 onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                className={`w-full p-2 border ${
+                  validationErrors.ssn ? 'border-red-500' : 'border-gray-300'
+                } rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
                 placeholder="주민등록번호 (예: 000000-0000000)"
                 required
               />
+              {validationErrors.ssn && (
+                <div className="mt-1 text-sm text-red-600 flex items-center">
+                  <FiAlertCircle className="mr-1" />
+                  {validationErrors.ssn}
+                </div>
+              )}
             </div>
 
             {/* 이메일 */}
@@ -177,10 +299,18 @@ const EmployeeAdd = ({ onClose, onEmployeeAdded }) => {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                className={`w-full p-2 border ${
+                  validationErrors.email ? 'border-red-500' : 'border-gray-300'
+                } rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
                 placeholder="이메일"
                 required
               />
+              {validationErrors.email && (
+                <div className="mt-1 text-sm text-red-600 flex items-center">
+                  <FiAlertCircle className="mr-1" />
+                  {validationErrors.email}
+                </div>
+              )}
             </div>
 
             {/* 전화번호 */}
@@ -193,9 +323,17 @@ const EmployeeAdd = ({ onClose, onEmployeeAdded }) => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                className={`w-full p-2 border ${
+                  validationErrors.phone ? 'border-red-500' : 'border-gray-300'
+                } rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
                 placeholder="전화번호 (예: 010-0000-0000)"
               />
+              {validationErrors.phone && (
+                <div className="mt-1 text-sm text-red-600 flex items-center">
+                  <FiAlertCircle className="mr-1" />
+                  {validationErrors.phone}
+                </div>
+              )}
             </div>
 
             {/* 부서 */}

@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FiHome, FiUsers, FiCalendar, FiArrowLeft, FiBriefcase, FiSettings } from 'react-icons/fi';
+import { FiHome, FiUsers, FiArrowLeft, FiBriefcase, FiSettings } from 'react-icons/fi';
 import useAuthStore from '../store/authStore';
 import '../styles/glassmorphism.css';
 
 const Sidebar = () => {
   const location = useLocation();
-  const { user, isAuthenticated, isLoading, initAuth, goToGroupware } = useAuthStore();
+  const { isLoading, initAuth} = useAuthStore();
   
   useEffect(() => {
     if (window.CURRENT_USER) {
@@ -22,8 +22,8 @@ const Sidebar = () => {
   }, [initAuth]);
   
   const isActive = (path) => {
-    return location.pathname === path ? 'bg-indigo-100 text-indigo-800' : 'text-gray-700 hover:bg-indigo-50';
-  };
+    return location.pathname === path ? 'bg-indigo-100 text-black' : 'text-gray-700 hover:bg-indigo-50';
+  };  
 
   if (isLoading) {
     return (
@@ -48,40 +48,31 @@ const Sidebar = () => {
             to="/"
             className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive('/')}`}
           >
-            <FiHome className="text-lg text-white" />
-            <span className="text-gray-200">대시보드</span>
+            <FiHome className={`text-lg ${location.pathname === '/' ? 'text-black' : 'text-white'}`}  />
+            <span className={`${location.pathname === '/' ? 'text-black' : 'text-gray-200'}`}>대시보드</span>
           </Link>
           
           <Link
             to="/employees"
             className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive('/employees')}`}
           >
-            <FiUsers className="text-lg text-white" />
-            <span className="text-gray-200">임직원 관리</span>
+            <FiUsers className={`text-lg ${location.pathname === '/employees' ? 'text-black' : 'text-white'}`}/>
+            <span className={`${location.pathname === '/employees' ? 'text-black' : 'text-gray-200'}`}>임직원 관리</span>
           </Link>
-          
-          <Link
-            to="/bookings"
-            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive('/bookings')}`}
-          >
-            <FiCalendar className="text-lg text-white" />
-            <span className="text-gray-200">예약 관리</span>
-          </Link>
-          
           <Link
             to="/boards"
-            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive('/departments')}`}
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive('/boards')}`}
           >
-            <FiBriefcase className="text-lg text-white" />
-            <span className="text-gray-200">게시판 관리</span>
+            <FiBriefcase className={`text-lg ${location.pathname === '/boards' ? 'text-black' : 'text-white'}`}/>
+            <span className={`${location.pathname === '/boards' ? 'text-black' : 'text-gray-200'}`}>게시판 관리</span>
           </Link>
           
           <Link
             to="/departmentpositionmanagement"
-            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive('/settings')}`}
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive('/departmentpositionmanagement')}`}
           >
-            <FiSettings className="text-lg text-white" />
-            <span className="text-gray-200">부서 / 직급 관리</span>
+            <FiSettings className={`text-lg ${location.pathname === '/departmentpositionmanagement' ? 'text-black' : 'text-white'}`} />
+            <span className={`${location.pathname === '/departmentpositionmanagement' ? 'text-black' : 'text-gray-200'}`}>부서 / 직급 관리</span>
           </Link>
         </nav>
       </div>
