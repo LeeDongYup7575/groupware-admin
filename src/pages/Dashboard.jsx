@@ -8,6 +8,7 @@ import AttendanceBarChart from '../components/AttendanceBarChart';
 import DepartmentPieChart from '../components/DepartmentPieChart';
 import EmployeeStatusChart from '../components/EmployeeStatusChart';
 import TodayAbsenceChart from '../components/TodayAbsenceChart';
+import { formatIntEmpNum } from '../utils/formatters';
 
 const Dashboard = () => {
     const [dashboardData, setDashboardData] = useState({
@@ -139,7 +140,7 @@ const Dashboard = () => {
                                 <tr key={employee.id} className="hover:bg-gray-50 cursor-pointer"
                                     onClick={() => navigate(`/employees/${employee.id}`)}>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {employee.empNum}
+                                    {formatIntEmpNum(employee.empNum)}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm font-medium text-gray-900">{employee.name}</div>

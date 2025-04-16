@@ -106,3 +106,13 @@ export const formatDate = (dateString) => {
       return empNum;
     }
   };
+
+  export const formatIntEmpNum = (empNum) => {
+    if (empNum === null || empNum === undefined) return '';
+  
+    // 숫자든 문자열이든 5자리로 만들고 0으로 앞을 채움
+    const padded = String(empNum).padStart(5, '0');
+  
+    // 예: 5자리 전체 그대로 반환 (혹은 원하는 포맷으로)
+    return padded;
+  };

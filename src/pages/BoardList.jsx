@@ -38,7 +38,7 @@ const BoardList = () => {
     return (
         <div className="app-gradient flex-1 ml-64 p-8">
             <div className="glass-card p-6 mb-4">
-                <h1 className="text-2xl font-bold text-gray-800">📋 게시판 목록</h1>
+                <h1 className="text-2xl font-bold text-gray-800">게시판 목록</h1>
             </div>
 
             {/* 🔍 검색 & 정렬 */}
@@ -58,8 +58,8 @@ const BoardList = () => {
                     onChange={(e) => setSortBy(e.target.value)}
                     className="glass-input px-3 py-2 w-full md:w-40 rounded-lg text-sm shadow-sm"
                 >
-                    <option value="createdAt">📅 생성일 순</option>
-                    <option value="name">🔤 이름순</option>
+                    <option value="createdAt">생성일 순</option>
+                    <option value="name">이름순</option>
                 </select>
             </div>
 

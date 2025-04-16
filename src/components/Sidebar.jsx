@@ -43,26 +43,6 @@ const Sidebar = () => {
         <h2 className="text-2xl font-semibold text-white mb-1">그룹웨어 관리자</h2>
         <p className="text-gray-300 text-sm mb-8">Admin Portal</p>
         
-        {isAuthenticated && user && (
-          <div className="mb-6 pb-6 border-b border-gray-600">
-            <div className="flex items-center mb-2">
-              {user.profileImgUrl && (
-                <img 
-                  src={user.profileImgUrl} 
-                  alt="프로필" 
-                  className="w-10 h-10 rounded-full mr-3 object-cover border border-gray-400"
-                />
-              )}
-              <div>
-                <p className="text-white font-medium">{user.name}</p>
-                <p className="text-gray-300 text-sm">{user.departmentName} | {user.positionTitle}</p>
-              </div>
-            </div>
-            <p className="text-gray-300 text-xs mt-1">{user.email || user.internalEmail}</p>
-            <p className="text-gray-300 text-xs">{user.empNum}</p>
-          </div>
-        )}
-        
         <nav className="space-y-2">
           <Link
             to="/"

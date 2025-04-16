@@ -34,7 +34,6 @@ const useEmployeeStore = create((set, get) => ({
     }
   },
   
-  // Fetch employee details
   fetchEmployeeDetails: async (id) => {
     set({ isLoading: true, error: null, currentEmployee: null });
     
@@ -77,8 +76,7 @@ const useEmployeeStore = create((set, get) => ({
       return { success: false, error: error.response?.data?.message || error.message };
     }
   },
-  
-  // Deactivate employee
+
   deactivateEmployee: async (id) => {
     set({ isLoading: true, error: null });
     

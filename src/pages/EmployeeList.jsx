@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiSearch, FiRefreshCw, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiSearch, FiRefreshCw, FiChevronLeft, FiChevronRight, FiUserPlus } from 'react-icons/fi';
 import useEmployeeStore from '../store/employeeStore';
 import { formatPhoneNumber, formatEmpNum } from '../utils/formatters';
 import '../styles/glassmorphism.css';
+import EmployeeAdd from '../components/EmployeeAdd';
 
 const EmployeeList = () => {
   const navigate = useNavigate();
@@ -23,9 +24,9 @@ const EmployeeList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDeptId, setSelectedDeptId] = useState('');
   const [selectedPosId, setSelectedPosId] = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
-    // Load initial data
     fetchEmployees(1);
     fetchDepartments();
     fetchPositions();
@@ -51,13 +52,17 @@ const EmployeeList = () => {
     navigate(`/employees/${id}`);
   };
 
+  const handleEmployeeAdded = () => {
+    // 직원이 추가되면 목록 다시 불러오기
+    fetchEmployees(currentPage, 10, searchTerm, selectedDeptId || null, selectedPosId || null);
+  };
+
   return (
     <div className="flex-1 ml-64 bg-gray-50 p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">임직원 관리</h1>
       </div>
 
-      {/* Search and Filter Section */}
       <div className="glass-card p-6 mb-6">
         <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="col-span-1 md:col-span-2">
@@ -107,12 +112,20 @@ const EmployeeList = () => {
           </div>
 
           <div className="md:col-span-4 flex justify-end space-x-3">
+         
             <button
               type="button"
               className="px-4 py-2 text-gray-600 hover:text-gray-900 flex items-center"
               onClick={handleReset}
             >
               <FiRefreshCw className="mr-2" /> 초기화
+            </button>
+            <button
+              type="button"
+              className="glass-btn px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
+              onClick={() => setShowAddModal(true)}
+            >
+              <FiUserPlus className="mr-2" /> 추가
             </button>
             <button
               type="submit"
@@ -275,6 +288,14 @@ const EmployeeList = () => {
           </div>
         )}
       </div>
+      
+      {/* 직원 추가 모달 */}
+      {showAddModal && (
+        <EmployeeAdd
+          onClose={() => setShowAddModal(false)}
+          onEmployeeAdded={handleEmployeeAdded}
+        />
+      )}
     </div>
   );
 };

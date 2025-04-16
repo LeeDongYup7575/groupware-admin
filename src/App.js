@@ -166,7 +166,7 @@ function App() {
   const isAuthenticated = true;
   
   return (
-    <Router>
+    <Router basename='/'>
       <div className="app-gradient flex min-h-screen">
         {isAuthenticated && <Sidebar />}
         

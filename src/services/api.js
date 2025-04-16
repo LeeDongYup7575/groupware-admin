@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:80', // 스프링 부트 서버 주소 -> 각자 자기 포트에 맞게 수정해주세여. 아마 다들 80일듯
+    baseURL: 'http://localhost:8082', // 스프링 부트 서버 주소 -> 각자 자기 포트에 맞게 수정해주세여. 아마 다들 80일듯
     headers: {
         'Content-Type': 'application/json',
     },
